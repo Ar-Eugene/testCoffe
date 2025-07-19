@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
 }
 
 android {
@@ -56,4 +58,28 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    implementation(libs.androidx.compose.viewmodel)
+    implementation(libs.androidx.runtime.livedata)
+
+    // Navigation for Compose
+    implementation(libs.androidx.navigation.compose)
+
+    // Hilt
+    implementation(libs.com.hilt)
+    ksp(libs.com.hilt.ksp)
+    implementation(libs.androidx.hilt.navigation.compose)
+
+    //Glide
+    implementation(libs.glide)
+    ksp(libs.glide.compiler)
+    implementation(libs.glide.compose)
+
+    //Networking
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.scalars)
+    implementation(libs.converter.gson)
+
+
+
 }
