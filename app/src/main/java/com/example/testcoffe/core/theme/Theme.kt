@@ -1,4 +1,4 @@
-package com.example.testcoffe.ui.theme
+package com.example.testcoffe.core.theme
 
 import android.app.Activity
 import android.os.Build
