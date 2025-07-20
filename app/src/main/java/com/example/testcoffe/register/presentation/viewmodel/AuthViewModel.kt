@@ -9,7 +9,7 @@ import com.example.testcoffe.register.domain.model.AuthToken
 import com.example.testcoffe.register.domain.use_case.LoginUseCase
 import com.example.testcoffe.register.domain.use_case.RegisterUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import jakarta.inject.Inject
+import javax.inject.Inject
 import kotlinx.coroutines.launch
 
 @HiltViewModel
@@ -27,9 +27,16 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    fun register(login: String, password: String) {
+    fun register(login: String, password: String, confirmPassword: String) {
+        if (password != confirmPassword) {
+            tokenState = Result.failure(Exception("Пароли не совпадают"))
+            return
+        }
+
         viewModelScope.launch {
-            tokenState = runCatching { registerUseCase(login, password) }
+            tokenState = runCatching {
+                registerUseCase(login, password)
+            }
         }
     }
 

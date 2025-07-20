@@ -5,7 +5,8 @@ import com.example.testcoffe.register.data.mapper.toDomain
 import com.example.testcoffe.register.data.network.AuthApi
 import com.example.testcoffe.register.domain.model.AuthToken
 import com.example.testcoffe.register.domain.repository.AuthRepository
-import jakarta.inject.Inject
+import javax.inject.Inject
+
 
 class AuthRepositoryImpl @Inject constructor(private val api: AuthApi) : AuthRepository {
     override suspend fun login(login: String, password: String): AuthToken {
