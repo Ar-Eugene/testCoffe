@@ -1,5 +1,6 @@
 package com.example.testcoffe.locations.presentation.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.testcoffe.locations.domain.model.Location
@@ -19,11 +20,11 @@ class LocationViewModel @Inject constructor(private val locationUseCase: Locatio
     private val _location = MutableStateFlow<List<Location>>(emptyList())
     val location: StateFlow<List<Location>> = _location.asStateFlow()
 
-    fun loadLocations(){
+    fun loadLocations(token: String) {
         viewModelScope.launch {
-            locationUseCase()
-                .catch { e-> "Ошибка"}
-                .collect{_location.value = it}
+            locationUseCase.invoke(token)
+                .catch { e -> Log.e("LocationViewModel", "Ошибка загрузки локаций: ${e.message}", e) }
+                .collect { _location.value = it }
         }
     }
 }

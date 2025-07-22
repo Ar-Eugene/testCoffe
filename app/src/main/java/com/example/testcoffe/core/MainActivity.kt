@@ -5,7 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.example.testcoffe.core.theme.TestCoffeTheme
-import com.example.testcoffe.menu.presentation.ui.MenuScreen
+import com.example.testcoffe.register.presentation.viewmodel.TestScreen
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -15,7 +15,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             TestCoffeTheme {
-                MenuScreen(locationId = 1L)
+//                MenuScreen(locationId = 1L)
+                TestScreen()
             }
         }
     }
