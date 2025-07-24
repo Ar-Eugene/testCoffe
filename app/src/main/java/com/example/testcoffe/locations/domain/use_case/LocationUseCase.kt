@@ -6,5 +6,5 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class LocationUseCase @Inject constructor(private val locationRepository: LocationRepository) {
-    operator fun invoke(): Flow<List<Location>> = locationRepository.getLocation()
+    operator fun invoke(token: String): Flow<List<Location>> = locationRepository.getLocation(token)
 }

@@ -70,16 +70,16 @@ dependencies {
     ksp(libs.com.hilt.ksp)
     implementation(libs.androidx.hilt.navigation.compose)
 
-    //Glide
-    implementation(libs.glide)
-    ksp(libs.glide.compiler)
-    implementation(libs.glide.compose)
+    //Coil
+    implementation(libs.coil.compose)
+    implementation(libs.play.services.location)
 
     //Networking
     implementation(libs.retrofit)
     implementation(libs.retrofit.converter.scalars)
     implementation(libs.converter.gson)
 
-
+    implementation("com.google.android.gms:play-services-location:21.0.1")
+    implementation("io.coil-kt:coil-compose:2.4.0")
 
 }

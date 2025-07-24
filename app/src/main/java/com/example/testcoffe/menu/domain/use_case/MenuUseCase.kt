@@ -6,6 +6,6 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class MenuUseCase @Inject constructor(private val menuRepository: MenuRepository) {
-
-    operator fun invoke(id: Long): Flow<List<Menu>> = menuRepository.getMenu(id)
+    operator fun invoke(id: Long, token: String): Flow<List<Menu>> =
+        menuRepository.getMenu(id, token)
 }

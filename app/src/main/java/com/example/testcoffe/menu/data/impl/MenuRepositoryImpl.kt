@@ -10,8 +10,8 @@ import javax.inject.Inject
 
 class MenuRepositoryImpl @Inject constructor(private val menuApi: MenuApi) :
     MenuRepository {
-    override fun getMenu(locationId: Long): Flow<List<Menu>> = flow {
-        val menus = menuApi.getMenu(locationId).map { it.toDomain() }
+    override fun getMenu(locationId: Long, token: String): Flow<List<Menu>> = flow {
+        val menus = menuApi.getMenu(locationId, "Bearer $token").map { it.toDomain() }
         emit(menus)
     }
 }
