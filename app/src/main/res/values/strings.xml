@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">TestCoffe</string>
+    <string name="register">Регистрация</string>
+    <string name="e_mail">e-mail</string>
+    <string name="password">Пароль</string>
+    <string name="confirmPassword">Подтвердите пароль</string>
+    <string name="register_button">Регистрация</string>
+
+    Регистрация
 </resources>

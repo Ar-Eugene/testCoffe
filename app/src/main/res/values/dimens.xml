@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="padding_18dp">18dp</dimen>
+    <dimen name="_24dp">24dp</dimen>
+    <dimen name="_8dp">8dp</dimen>
+
+    <dimen name="text_18sp">18sp</dimen>
+    <dimen name="text_15sp">15sp</dimen>
+</resources>
