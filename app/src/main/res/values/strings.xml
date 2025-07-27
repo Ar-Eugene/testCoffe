@@ -8,4 +8,6 @@
     <string name="enter">Вход</string>
     <string name="in_map">На карте</string>
     <string name="coffe">Ближайшие кофейни</string>
+    <string name="menu">Меню</string>
+    <string name="go_to_order">Перейти к оплате</string>
 </resources>

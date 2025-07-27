@@ -4,6 +4,7 @@
     <dimen name="_24dp">24dp</dimen>
     <dimen name="_8dp">8dp</dimen>
     <dimen name="_16dp">16dp</dimen>
+    <dimen name="_6dp">6dp</dimen>
 
     <dimen name="text_18sp">18sp</dimen>
     <dimen name="text_16sp">15sp</dimen>

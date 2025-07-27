@@ -196,48 +196,6 @@ fun TopAppBarState(onClick: () -> Unit, text: String) {
     }
 }
 
-@Composable
-fun LocationItem(
-    location: Location,
-    userLat: Double,
-    userLon: Double,
-    onClick: () -> Unit,
-) {
-    val distanceText = try {
-        val distance = calculateDistance(userLat, userLon, location.latitude, location.longitude)
-        if (distance > 1000) "${(distance / 1000).toInt()} км от вас" else "${distance.toInt()} м от вас"
-    } catch (e: Exception) {
-        "Ошибка"
-    }
-
-    ElevatedCard(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 6.dp)
-            .clickable { onClick() },
-        shape = RoundedCornerShape(6.dp),
-        elevation = CardDefaults.cardElevation(4.dp),
-        colors = CardDefaults.elevatedCardColors(
-            containerColor = CardColor
-        )
-    ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(
-                text = location.name,
-                color = BigTextColor,
-                fontSize = dimensionResource(R.dimen.text_18sp).value.sp,
-                fontWeight = FontWeight.Bold
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = distanceText,
-                color = PlaceholderColor,
-                fontSize = dimensionResource(R.dimen.text_16sp).value.sp,
-                fontWeight = FontWeight.Normal
-            )
-        }
-    }
-}
 
 @Composable
 fun Button(

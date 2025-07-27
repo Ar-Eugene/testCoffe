@@ -3,79 +3,115 @@ package com.example.testcoffe.menu.presentation.ui
 import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.example.testcoffe.R
+import com.example.testcoffe.core.theme.CardColor
+import com.example.testcoffe.core.theme.FocusedBorderColor
+import com.example.testcoffe.core.theme.IconBackColor
+import com.example.testcoffe.core.theme.PlaceholderColor
 import com.example.testcoffe.menu.domain.model.Menu
 
 @Composable
 fun MenuItemCard(
     menu: Menu,
     onIncrement: () -> Unit,
-    onDecrement: () -> Unit
+    onDecrement: () -> Unit,
 ) {
-    Card(
-        shape = RoundedCornerShape(12.dp),
+    ElevatedCard(
+        shape = RoundedCornerShape(dimensionResource(R.dimen._6dp)),
         elevation = CardDefaults.cardElevation(4.dp),
         modifier = Modifier
-            .padding(8.dp)
             .fillMaxWidth()
+            .height(210.dp),
+        colors = CardDefaults.elevatedCardColors(
+            containerColor = Color.White
+        )
     ) {
-        Row(
-            modifier = Modifier.padding(8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
+        Column {
+            // Картинка
             AsyncImage(
                 model = menu.imageURL,
                 contentDescription = menu.name,
                 modifier = Modifier
-                    .size(80.dp)
-                    .clip(RoundedCornerShape(8.dp)),
+                    .fillMaxWidth()
+                    .height(137.dp),
                 contentScale = ContentScale.Crop,
                 onError = { error -> Log.e("MenuImage", "Ошибка Coil: $error") }
             )
+            // Название
+            Text(
+                text = menu.name,
+                color = PlaceholderColor,
+                fontSize = dimensionResource(R.dimen.text_16sp).value.sp,
+                fontWeight = FontWeight.Medium,
+                modifier = Modifier.padding(start = 12.dp, top = 10.dp),
+                textAlign = TextAlign.Start,
+            )
+            Row(
+                modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically
 
-            Spacer(modifier = Modifier.width(16.dp))
-
-            Column(
-                modifier = Modifier.weight(1f)
             ) {
-                Text(menu.name, style = MaterialTheme.typography.titleMedium)
-                Text("${menu.price.toInt()} руб", style = MaterialTheme.typography.bodySmall)
+                // Цена
+                Text(
+                    text = "${menu.price.toInt()} руб",
+                    color = FocusedBorderColor,
+                    fontSize = dimensionResource(R.dimen.text_18sp).value.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(end = 4.dp),
+                )
 
+                // Счетчик
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    IconButton(onClick = onDecrement) {
-                        Icon(Icons.Default.Add, contentDescription = "Уменьшить")
+                    IconButton(
+                        onClick = onDecrement,
+                        modifier = Modifier.size(24.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.remove),
+                            contentDescription = "Уменьшить",
+                            tint = CardColor
+                        )
                     }
 
                     Text(
-                        "${menu.count}",
-                        style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier.padding(horizontal = 8.dp)
+                        text = "${menu.count}",
+                        color = IconBackColor,
+                        fontSize = dimensionResource(R.dimen.text_16sp).value.sp,
+                        fontWeight = FontWeight.Normal,
+                        modifier = Modifier.padding(horizontal = 4.dp)
                     )
-
-                    IconButton(onClick = onIncrement) {
-                        Icon(Icons.Default.Add, contentDescription = "Увеличить")
+                    IconButton(
+                        onClick = onIncrement,
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.add),
+                            contentDescription = "Увеличить",
+                            tint = CardColor
+                        )
                     }
                 }
             }
