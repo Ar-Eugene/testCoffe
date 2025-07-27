@@ -1,20 +1,20 @@
-package com.example.testcoffe.menu.presentation.ui
+package com.example.testcoffe.locations.presentation.ui
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -26,6 +26,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -34,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.testcoffe.R
 import com.example.testcoffe.core.theme.BigTextColor
 import com.example.testcoffe.core.theme.ButtomTextColor
@@ -41,22 +43,27 @@ import com.example.testcoffe.core.theme.ButtonBackgroundColor
 import com.example.testcoffe.core.theme.DividerColor
 import com.example.testcoffe.core.theme.IconBackColor
 import com.example.testcoffe.core.theme.StatusBarColor
-import com.example.testcoffe.menu.presentation.viewmodel.MenuViewModel
-import com.example.testcoffe.order.presentation.viewmodel.CartViewModel
+import com.example.testcoffe.locations.presentation.viewmodel.LocationViewModel
+import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.pow
+import kotlin.math.sin
+import kotlin.math.sqrt
 
 @Composable
-fun MenuScreen(
-    locationId: Long,
+fun LocationsScreen(
     token: String,
-    navController: NavController,
-    menuViewModel: MenuViewModel = hiltViewModel(),
-    cartViewModel: CartViewModel = hiltViewModel(),
+    navController: NavController = rememberNavController(),
+    viewModel: LocationViewModel = hiltViewModel(),
+    context: Context = LocalContext.current, // Добавляем контекст для Toast
 ) {
-    val menuItems by menuViewModel.menuItem.collectAsState()
-    val cartItems by cartViewModel.cartItems.collectAsState()
+    val locations by viewModel.location.collectAsState()
+    val userLocation by viewModel.userLocation.collectAsState()
+    val isLoading = locations.isEmpty() || userLocation == null
 
-    LaunchedEffect(locationId) {
-        menuViewModel.loadMenu(locationId, token)
+    LaunchedEffect(token) {
+        viewModel.loadUserLocation()
+        viewModel.loadLocations(token)
     }
 
     Column(
@@ -65,52 +72,79 @@ fun MenuScreen(
             .fillMaxSize()
             .navigationBarsPadding()
     ) {
-        TopAppBarStateMenu(
+        TopAppBarState(
             onClick = {
-                navController.popBackStack()
-
+                navController.navigate("login") {
+                    popUpTo("locations/{token}") { inclusive = true }
+                }
             },
-            text = stringResource(R.string.menu)
+            text = stringResource(R.string.coffe)
         )
 
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
-            modifier = Modifier.weight(1f),
-            contentPadding = PaddingValues(dimensionResource(R.dimen._16dp)),
-            verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen._16dp)),
-            horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen._16dp))
+        Box(
+            modifier = Modifier
+                .weight(1f) // Занимает все доступное пространство между AppBar и кнопкой
+                .padding(horizontal = dimensionResource(R.dimen._16dp))
         ) {
-            items(menuItems) { item ->
-                val cartItem = cartItems.find { it.id == item.id }
-                val count = cartItem?.count ?: 0
+            if (isLoading) {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            } else {
+                val (userLat, userLon) = userLocation!!
 
-                MenuItemCard(
-                    menu = item.copy(count = count),
-                    onIncrement = {
-                        cartViewModel.addItem(item)
-                        cartViewModel.updateItemCount(item.id, count + 1)
-                    },
-                    onDecrement = {
-                        if (count > 1) {
-                            cartViewModel.updateItemCount(item.id, count - 1)
-                        } else {
-                            cartViewModel.updateItemCount(item.id, 0)
-                        }
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(top = dimensionResource(R.dimen._16dp)),
+
+                    ) {
+                    items(locations) { location ->
+                        LocationItem(
+                            location = location,
+                            userLat = userLat,
+                            userLon = userLon,
+                            onClick = {
+                                navController.navigate("menu/${location.id}/$token")
+                            }
+                        )
                     }
-                )
+                }
             }
         }
-        ButtonToOrder(
-            onClick = { navController.navigate("order") },
-            text = stringResource(R.string.go_to_order)
-        )
 
+        // Фиксированная кнопка внизу экрана
+        Button(
+            text = stringResource(R.string.in_map),
+            onClick = {
+                Toast.makeText(
+                    context, // Используем полученный контекст
+                    "Функция будет доступна после релиза",
+                    Toast.LENGTH_SHORT
+                ).show()
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = dimensionResource(R.dimen._16dp), vertical = dimensionResource(R.dimen._8dp))
+        )
     }
+}
+
+fun calculateDistance(
+    userLat: Double, userLon: Double,
+    cafeLat: Double, cafeLon: Double,
+): Double {
+    val earthRadius = 6371000.0 // метры
+    val dLat = Math.toRadians(cafeLat - userLat)
+    val dLon = Math.toRadians(cafeLon - userLon)
+    val a = sin(dLat / 2).pow(2.0) +
+            cos(Math.toRadians(userLat)) * cos(Math.toRadians(cafeLat)) *
+            sin(dLon / 2).pow(2.0)
+    val c = 2 * atan2(sqrt(a), sqrt(1 - a))
+    return earthRadius * c // в метрах
 }
 
 // Верхняя часть с заголовком
 @Composable
-fun TopAppBarStateMenu(onClick: () -> Unit, text: String) {
+fun TopAppBarState(onClick: () -> Unit, text: String) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -130,7 +164,7 @@ fun TopAppBarStateMenu(onClick: () -> Unit, text: String) {
             ) {
                 Icon(
                     painter = painterResource(R.drawable.arrow_back),
-                    contentDescription = "кнопка перехода на экран логации",
+                    contentDescription = "кнопка перехода на выход",
                     tint = IconBackColor
                 )
             }
@@ -153,8 +187,9 @@ fun TopAppBarStateMenu(onClick: () -> Unit, text: String) {
     }
 }
 
+
 @Composable
-fun ButtonToOrder(
+fun Button(
     onClick: () -> Unit,
     text: String,
     modifier: Modifier = Modifier,
@@ -162,8 +197,7 @@ fun ButtonToOrder(
     Button(
         onClick = onClick,
         modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = dimensionResource(R.dimen._16dp)),
+            .fillMaxWidth(),
         colors = ButtonDefaults.buttonColors(ButtonBackgroundColor)
     ) {
         Text(

@@ -1,9 +1,11 @@
 package com.example.testcoffe.register.presentation.viewmodel
 
+import android.app.Application
+import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.testcoffe.register.domain.model.AuthToken
 import com.example.testcoffe.register.domain.use_case.LoginUseCase
@@ -14,12 +16,21 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
+    app: Application,
     private val loginUseCase: LoginUseCase,
     private val registerUseCase: RegisterUseCase
-) : ViewModel() {
+) : AndroidViewModel(app) {
 
     var tokenState by mutableStateOf<Result<AuthToken>?>(null)
         private set
+
+    private val prefs = app.getSharedPreferences("auth_prefs", Context.MODE_PRIVATE)
+
+    fun isRegistered(): Boolean = prefs.getBoolean("registered", false)
+
+    fun setRegistered() {
+        prefs.edit().putBoolean("registered", true).apply()
+    }
 
     fun login(login: String, password: String) {
         viewModelScope.launch {
@@ -37,7 +48,9 @@ class AuthViewModel @Inject constructor(
             tokenState = runCatching {
                 registerUseCase(login, password)
             }
+            tokenState?.onSuccess {
+                setRegistered()
+            }
         }
     }
-
 }
