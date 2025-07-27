@@ -52,7 +52,7 @@ fun AuthScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        StatusBarText(text = stringResource(R.string.register))
+        TopAppBarText(text = stringResource(R.string.register))
 
         // Основное содержимое
         Column(

@@ -6,7 +6,6 @@
     <string name="confirmPassword">Подтвердите пароль</string>
     <string name="register_button">Регистрация</string>
     <string name="enter">Вход</string>
-
-
-    Регистрация
+    <string name="in_map">На карте</string>
+    <string name="coffe">Ближайшие кофейни</string>
 </resources>

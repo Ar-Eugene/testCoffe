@@ -38,11 +38,11 @@ import com.example.testcoffe.core.theme.StatusBarColor
 
 // Верхняя часть с заголовком
 @Composable
-fun StatusBarText(text: String) {
+fun TopAppBarText(text: String) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(StatusBarColor) // Серый фон как на скриншоте
+            .background(StatusBarColor)
             .statusBarsPadding()
             .padding(vertical = dimensionResource(R.dimen.padding_18dp)),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -73,12 +73,12 @@ fun TextOverextField(
     Text(
         text = text,
         color = PlaceholderColor,
-        fontSize = dimensionResource(R.dimen.text_15sp).value.sp,
-        fontWeight = fontWeight, // Применяем переданный вес
+        fontSize = dimensionResource(R.dimen.text_16sp).value.sp,
+        fontWeight = fontWeight,
         modifier = modifier
             .padding(bottom = dimensionResource(R.dimen._8dp))
             .fillMaxWidth()
-            .wrapContentWidth(Alignment.Start)  // Выравнивание по левому краю
+            .wrapContentWidth(Alignment.Start)
     )
 }
 

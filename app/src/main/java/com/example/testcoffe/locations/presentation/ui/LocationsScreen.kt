@@ -1,5 +1,8 @@
 package com.example.testcoffe.locations.presentation.ui
 
+import android.content.Context
+import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -7,14 +10,20 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Divider
+import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -22,10 +31,26 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.testcoffe.R
+import com.example.testcoffe.core.theme.BigTextColor
+import com.example.testcoffe.core.theme.ButtomTextColor
+import com.example.testcoffe.core.theme.ButtonBackgroundColor
+import com.example.testcoffe.core.theme.CardColor
+import com.example.testcoffe.core.theme.DividerColor
+import com.example.testcoffe.core.theme.IconBackColor
+import com.example.testcoffe.core.theme.PlaceholderColor
+import com.example.testcoffe.core.theme.StatusBarColor
 import com.example.testcoffe.locations.domain.model.Location
 import com.example.testcoffe.locations.presentation.viewmodel.LocationViewModel
 import kotlin.math.atan2
@@ -37,8 +62,9 @@ import kotlin.math.sqrt
 @Composable
 fun LocationsScreen(
     token: String,
-    navController: NavController = rememberNavController(), // <-- добавим аргумент
-    viewModel: LocationViewModel = hiltViewModel()
+    navController: NavController = rememberNavController(),
+    viewModel: LocationViewModel = hiltViewModel(),
+    context: Context = LocalContext.current, // Добавляем контекст для Toast
 ) {
     val locations by viewModel.location.collectAsState()
     val userLocation by viewModel.userLocation.collectAsState()
@@ -49,34 +75,71 @@ fun LocationsScreen(
         viewModel.loadLocations(token)
     }
 
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+    Column(
+        modifier = Modifier
+            .background(Color.White)
+            .fillMaxSize()
+            .navigationBarsPadding()
     ) {
-        if (isLoading) {
-            CircularProgressIndicator()
-        } else {
-            val (userLat, userLon) = userLocation!!
+        TopAppBarState(
+            onClick = {
+                navController.navigate("login") {
+                    popUpTo("locations/{token}") { inclusive = true }
+                }
+            },
+            text = stringResource(R.string.coffe)
+        )
 
-            LazyColumn(modifier = Modifier.padding(8.dp)) {
-                items(locations) { location ->
-                    LocationItem(
-                        location = location,
-                        userLat = userLat,
-                        userLon = userLon,
-                        onClick = {
-                            navController.navigate("menu/${location.id}/$token")
-                        }
-                    )
+        Box(
+            modifier = Modifier
+                .weight(1f) // Занимает все доступное пространство между AppBar и кнопкой
+                .padding(horizontal = dimensionResource(R.dimen._16dp))
+        ) {
+            if (isLoading) {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            } else {
+                val (userLat, userLon) = userLocation!!
+
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(top = dimensionResource(R.dimen._16dp)),
+
+                    ) {
+                    items(locations) { location ->
+                        LocationItem(
+                            location = location,
+                            userLat = userLat,
+                            userLon = userLon,
+                            onClick = {
+                                navController.navigate("menu/${location.id}/$token")
+                            }
+                        )
+                    }
                 }
             }
         }
+
+        // Фиксированная кнопка внизу экрана
+        Button(
+            text = stringResource(R.string.in_map),
+            onClick = {
+                Toast.makeText(
+                    context, // Используем полученный контекст
+                    "Функция будет доступна после релиза",
+                    Toast.LENGTH_SHORT
+                ).show()
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp)
+        )
     }
 }
 
 fun calculateDistance(
     userLat: Double, userLon: Double,
-    cafeLat: Double, cafeLon: Double
+    cafeLat: Double, cafeLon: Double,
 ): Double {
     val earthRadius = 6371000.0 // метры
     val dLat = Math.toRadians(cafeLat - userLat)
@@ -88,12 +151,57 @@ fun calculateDistance(
     return earthRadius * c // в метрах
 }
 
+// Верхняя часть с заголовком
+@Composable
+fun TopAppBarState(onClick: () -> Unit, text: String) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(StatusBarColor)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .statusBarsPadding()
+        ) {
+            // Кнопка назад в левом углу
+            IconButton(
+                onClick = onClick,
+                modifier = Modifier
+                    .align(Alignment.CenterStart)
+                    .padding(start = 20.dp)
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.arrow_back),
+                    contentDescription = "кнопка перехода на выход",
+                    tint = IconBackColor
+                )
+            }
+            // Текст по центру
+            Text(
+                text = text,
+                color = BigTextColor,
+                fontSize = dimensionResource(R.dimen.text_18sp).value.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.align(Alignment.Center)
+            )
+        }
+        // Разделительная полоса
+        Divider(
+            color = DividerColor,
+            thickness = 1.dp,
+            modifier = Modifier
+                .fillMaxWidth()
+        )
+    }
+}
+
 @Composable
 fun LocationItem(
     location: Location,
     userLat: Double,
     userLon: Double,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     val distanceText = try {
         val distance = calculateDistance(userLat, userLon, location.latitude, location.longitude)
@@ -102,18 +210,54 @@ fun LocationItem(
         "Ошибка"
     }
 
-    Card(
+    ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp)
+            .padding(bottom = 6.dp)
             .clickable { onClick() },
-        shape = RoundedCornerShape(12.dp),
-        elevation = CardDefaults.cardElevation(4.dp)
+        shape = RoundedCornerShape(6.dp),
+        elevation = CardDefaults.cardElevation(4.dp),
+        colors = CardDefaults.elevatedCardColors(
+            containerColor = CardColor
+        )
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = location.name, style = MaterialTheme.typography.headlineSmall)
+            Text(
+                text = location.name,
+                color = BigTextColor,
+                fontSize = dimensionResource(R.dimen.text_18sp).value.sp,
+                fontWeight = FontWeight.Bold
+            )
             Spacer(modifier = Modifier.height(4.dp))
-            Text(text = distanceText, style = MaterialTheme.typography.bodyMedium)
+            Text(
+                text = distanceText,
+                color = PlaceholderColor,
+                fontSize = dimensionResource(R.dimen.text_16sp).value.sp,
+                fontWeight = FontWeight.Normal
+            )
         }
+    }
+}
+
+@Composable
+fun Button(
+    onClick: () -> Unit,
+    text: String,
+    modifier: Modifier = Modifier,
+) {
+    Button(
+        onClick = onClick,
+        modifier = modifier
+            .fillMaxWidth(),
+        colors = ButtonDefaults.buttonColors(ButtonBackgroundColor)
+    ) {
+        Text(
+            modifier = Modifier
+                .padding(vertical = 12.dp),
+            text = text,
+            fontSize = dimensionResource(R.dimen.text_18sp).value.sp,
+            fontWeight = FontWeight.Bold,
+            color = ButtomTextColor
+        )
     }
 }

@@ -18,6 +18,8 @@ val StatusBarColor = Color(0xFFFAF9F9)
 val ButtonBackgroundColor = Color(0xFF342D1A)
 val ButtomTextColor = Color(0xFFF6E5D1)
 val DividerColor = Color(0xFFC2C2C2)
+val IconBackColor = Color(0xFF846340)
+val CardColor = Color(0xFFF6E5D1)
 
 
 

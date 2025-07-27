@@ -3,7 +3,8 @@
     <dimen name="padding_18dp">18dp</dimen>
     <dimen name="_24dp">24dp</dimen>
     <dimen name="_8dp">8dp</dimen>
+    <dimen name="_16dp">16dp</dimen>
 
     <dimen name="text_18sp">18sp</dimen>
-    <dimen name="text_15sp">15sp</dimen>
+    <dimen name="text_16sp">15sp</dimen>
 </resources>

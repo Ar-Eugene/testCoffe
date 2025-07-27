@@ -54,7 +54,7 @@ fun LoginScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        StatusBarText(text = stringResource(R.string.enter))
+        TopAppBarText(text = stringResource(R.string.enter))
 
         // Основное содержимое
         Column(
