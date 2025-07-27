@@ -17,7 +17,6 @@ import com.example.testcoffe.register.presentation.ui.AuthScreen
 import com.example.testcoffe.register.presentation.ui.LoginScreen
 import com.example.testcoffe.register.presentation.viewmodel.AuthViewModel
 
-
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
@@ -67,10 +66,7 @@ fun AppNavigation() {
 
             OrderScreen(
                 orderItems = cartItems,
-                onPayClick = {
-                    cartViewModel.clearCart()
-                    // TODO: отправка заказа
-                }
+                navController = navController
             )
         }
     }

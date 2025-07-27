@@ -10,4 +10,7 @@
     <string name="coffe">Ближайшие кофейни</string>
     <string name="menu">Меню</string>
     <string name="go_to_order">Перейти к оплате</string>
+    <string name="order">Ваш заказ</string>
+    <string name="pay">Оплатить</string>
+    <string name="wait">"Время ожидания заказа\n15 минут!\nСпасибо, что выбрали нас!"</string>
 </resources>

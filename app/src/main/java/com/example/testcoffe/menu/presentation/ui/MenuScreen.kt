@@ -65,7 +65,7 @@ fun MenuScreen(
             .fillMaxSize()
             .navigationBarsPadding()
     ) {
-        TopAppBarStatee(
+        TopAppBarStateMenu(
             onClick = {
                 navController.popBackStack()
 
@@ -110,7 +110,7 @@ fun MenuScreen(
 
 // Верхняя часть с заголовком
 @Composable
-fun TopAppBarStatee(onClick: () -> Unit, text: String) {
+fun TopAppBarStateMenu(onClick: () -> Unit, text: String) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -130,7 +130,7 @@ fun TopAppBarStatee(onClick: () -> Unit, text: String) {
             ) {
                 Icon(
                     painter = painterResource(R.drawable.arrow_back),
-                    contentDescription = "кнопка перехода на выход",
+                    contentDescription = "кнопка перехода на экран логации",
                     tint = IconBackColor
                 )
             }

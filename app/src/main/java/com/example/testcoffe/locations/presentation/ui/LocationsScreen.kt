@@ -3,25 +3,19 @@ package com.example.testcoffe.locations.presentation.ui
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
-import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -46,12 +40,9 @@ import com.example.testcoffe.R
 import com.example.testcoffe.core.theme.BigTextColor
 import com.example.testcoffe.core.theme.ButtomTextColor
 import com.example.testcoffe.core.theme.ButtonBackgroundColor
-import com.example.testcoffe.core.theme.CardColor
 import com.example.testcoffe.core.theme.DividerColor
 import com.example.testcoffe.core.theme.IconBackColor
-import com.example.testcoffe.core.theme.PlaceholderColor
 import com.example.testcoffe.core.theme.StatusBarColor
-import com.example.testcoffe.locations.domain.model.Location
 import com.example.testcoffe.locations.presentation.viewmodel.LocationViewModel
 import kotlin.math.atan2
 import kotlin.math.cos
@@ -132,7 +123,7 @@ fun LocationsScreen(
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp)
+                .padding(horizontal = dimensionResource(R.dimen._16dp), vertical = dimensionResource(R.dimen._8dp))
         )
     }
 }

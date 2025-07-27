@@ -8,4 +8,5 @@
 
     <dimen name="text_18sp">18sp</dimen>
     <dimen name="text_16sp">15sp</dimen>
+    <dimen name="text_24sp">24sp</dimen>
 </resources>

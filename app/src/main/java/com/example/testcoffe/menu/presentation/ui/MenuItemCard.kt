@@ -102,6 +102,7 @@ fun MenuItemCard(
                         color = IconBackColor,
                         fontSize = dimensionResource(R.dimen.text_16sp).value.sp,
                         fontWeight = FontWeight.Normal,
+                        textAlign = TextAlign.Center,
                         modifier = Modifier.padding(horizontal = 4.dp)
                     )
                     IconButton(
